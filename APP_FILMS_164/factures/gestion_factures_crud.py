@@ -117,7 +117,7 @@ def facture_ajouter_wtf():
                 with DBconnection() as mconn_bd:
                     mconn_bd.execute(strsql_insert, valeurs_insertion)
 
-                flash("Фактура успешно добавлена!", "success")
+                flash("Facture ajoutée avec succès!", "success")
                 return redirect(url_for('facture_afficher', order_by='ASC', id_facture_sel=0))
         except Exception as e:
             raise ExceptionFacturesAjouterWtf(f"Ошибка при добавлении facture : {e}")
@@ -166,7 +166,7 @@ def facture_update_wtf():
             with DBconnection() as mconn_bd:
                 mconn_bd.execute(strsql_update, valeurs_update)
 
-            flash("Данные фактуры успешно обновлены!", "success")
+            flash("Facture modifiée avec succès!", "success")
             return redirect(url_for('facture_afficher', order_by='ASC', id_facture_sel=0))
         except Exception as e:
             raise ExceptionFacturesAjouterWtf(f"Ошибка при обновлении facture : {e}")
@@ -201,7 +201,7 @@ def facture_delete_wtf():
                 strsql_delete = "DELETE FROM t_facture WHERE id_facture = %(value_id_facture)s"
                 with DBconnection() as mconn_bd:
                     mconn_bd.execute(strsql_delete, {"value_id_facture": id_facture_delete})
-                flash("Фактура успешно удалена!", "success")
+                flash("Facture supprimée avec succès!", "success")
                 return redirect(url_for('facture_afficher', order_by="ASC", id_facture_sel=0))
             except Exception as e:
                 raise ExceptionFacturesAjouterWtf(f"Ошибка при удалении facture : {e}")

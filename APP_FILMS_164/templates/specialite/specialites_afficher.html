@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %} Afficher SPÉCIALITÉS {% endblock %}
+{% block body %}
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<p>
+				Spécialités
+			</p>
+            <table class="table table-bordered table-sm">
+            {% if data %}
+                <thead>
+                    <tr>
+                        <th class="align-middle">
+                            id_specialite
+                        </th>
+                        <th class="align-middle">
+                            nom_specialite
+                        </th>
+                    </tr>
+                </thead>
+            {% endif %}
+
+            {% for row in data %}
+				<tbody>
+					<tr>
+						<td class="align-middle">
+							{{ row.id_specialite }}
+						</td>
+						<td class="align-middle">
+							{{ row.nom_specialite }}
+						</td>
+						<td class="text-center align-middle">
+            				<a class="btn btn-primary mb-2" href="{{ url_for('specialites_ajouter_wtf') }}" role="button">Ajouter</a>
+						</td>
+						<td class="text-center align-middle">
+							<a class="btn btn-warning" href="{{ url_for('specialite_update_wtf', id_specialite_btn_edit_html=row.id_specialite) }}" role="button">Modifier</a>
+						</td>
+						<td class="text-center align-middle">
+							<a class="btn btn-danger" href="{{ url_for('specialite_delete_wtf', id_specialite_btn_delete_html=row.id_specialite) }}" role="button">Supprimer</a>
+						</td>
+					</tr>
+				</tbody>
+            {% else %}
+				<tbody>
+					<tr>
+						<td colspan="4">
+							Aucune spécialité.
+						</td>
+						<td class="text-center align-middle">
+            				<a class="btn btn-primary mb-2" href="{{ url_for('specialites_ajouter_wtf') }}" role="button">Ajouter</a>
+						</td>
+					</tr>
+				</tbody>
+            {% endfor %}
+			</table>
+		</div>
+	</div>
+</div>
+{% endblock %}
+

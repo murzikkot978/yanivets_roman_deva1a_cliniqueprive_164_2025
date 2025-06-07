@@ -19,7 +19,7 @@ class FormWTFAjouterPatients(FlaskForm):
     nom_patient_wtf = StringField("Prénom", validators=[Length(min=2, max=20, message="min 2 max 20"),
                                                     Regexp(nom_patient_regexp, message="Nom incorrect")])
     prenome_patient_wtf = StringField("Nom", validators=[Length(min=2, max=20, message="min 2 max 20")])
-    date_naissance_wtf = DateField("Дата рождения", validators=[InputRequired("Дата обязательна")])
+    date_naissance_wtf = DateField("Date de naissance", validators=[InputRequired("Date obligatoire")])
     adresse_wtf = StringField("Adresse", validators=[Length(min=2, max=50, message="min 2 max 50")])
     telephone_wtf = StringField("Téléphone", validators=[Length(min=6, max=20, message="min 6 max 20")])
     email_wtf = StringField("Email", validators=[Length(min=5, max=100, message="min 5 max 100")])
@@ -35,7 +35,7 @@ class FormWTFUpdatePatient(FlaskForm):
     nom_patient_update_wtf = StringField("Prénom", validators=[Length(min=2, max=20, message="min 2 max 20"),
                                                            Regexp(nom_patient_update_regexp, message="Nom incorrect")])
     prenome_patient_update_wtf = StringField("Nom", validators=[Length(min=2, max=20, message="min 2 max 20")])
-    date_naissance_update_wtf = DateField("Дата рождения", validators=[InputRequired("Дата обязательна")])
+    date_naissance_update_wtf = DateField("Date de naissance", validators=[InputRequired("Date obligatoire")])
     adresse_update_wtf = StringField("Adresse", validators=[Length(min=2, max=50, message="min 2 max 50")])
     telephone_update_wtf = StringField("Téléphone", validators=[Length(min=6, max=20, message="min 6 max 20")])
     email_update_wtf = StringField("Email", validators=[Length(min=5, max=100, message="min 5 max 100")])

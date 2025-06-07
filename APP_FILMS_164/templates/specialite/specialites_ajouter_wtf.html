@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %} Ajouter une spécialité (WTF) {% endblock %}
+{% block body %}
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<p>
+				Ajouter une nouvelle spécialité (WTForms)
+			</p>
+			<form action="" method="POST" novalidate>
+				<!-- Protection contre les attaques Cross-Site Request Forgery (CSRF) -->
+				{{ form.hidden_tag() }}
+				{{ form.id_specialite_hidden() }}
+				<div class="form-group">
+					<p>
+						{{ form.nom_specialite_wtf.label }}<br>
+						{{ form.nom_specialite_wtf(size=32) }}<br>
+						{% for error in form.nom_specialite_wtf.errors %}
+							<span style="color: red;">[{{ error }}]</span>
+						{% endfor %}
+					</p>
+				</div>
+				{{ form.submit(class="btn btn-primary") }}
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock %}
+

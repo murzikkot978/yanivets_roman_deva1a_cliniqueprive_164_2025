@@ -127,10 +127,10 @@ def patients_ajouter_wtf():
                 with DBconnection() as mconn_bd:
                     mconn_bd.execute(strsql_insert_patient, valeurs_insertion)
 
-                flash(f"Пациент успешно добавлен: {nom_patient}!", "success")
+                flash(f"Patient ajouté avec succès : {nom_patient}!", "success")
                 return redirect(url_for('patients_afficher', order_by='ASC', id_patient_sel=0))
         except Exception as e:
-            raise ExceptionGenresAjouterWtf(f"Erreur при добавлении нового пациента : {e}")
+            raise ExceptionGenresAjouterWtf(f"Erreur lors de l'ajout d'un patient : {e}")
 
     return render_template("patient/patients_ajouter_wtf.html", form=form)
 
@@ -195,10 +195,10 @@ def patient_update_wtf():
             with DBconnection() as mconn_bd:
                 mconn_bd.execute(strsql_update_patient, valeurs_update)
 
-            flash(f"Данные пациента успешно обновлены: {nom_patient}!", "success")
+            flash(f"Données patient modifiées avec succès : {nom_patient}!", "success")
             return redirect(url_for('patients_afficher', order_by='ASC', id_patient_sel=0))
         except Exception as e:
-            raise ExceptionGenresAjouterWtf(f"Ошибка при обновлении пациента : {e}")
+            raise ExceptionGenresAjouterWtf(f"Erreur lors de la modification du patient : {e}")
 
     elif request.method == "GET":
         strsql_select_patient = "SELECT * FROM t_pationt WHERE id_pationt = %(value_id_pationt)s"
@@ -248,10 +248,10 @@ def patient_delete_wtf():
                 strsql_delete_patient = "DELETE FROM t_pationt WHERE id_pationt = %(value_id_pationt)s"
                 with DBconnection() as mconn_bd:
                     mconn_bd.execute(strsql_delete_patient, {"value_id_pationt": id_patient_delete})
-                flash("Пациент успешно удалён!", "success")
+                flash("Patient supprimé avec succès!", "success")
                 return redirect(url_for('patients_afficher', order_by="ASC", id_patient_sel=0))
             except Exception as e:
-                raise ExceptionGenresAjouterWtf(f"Ошибка при удалении пациента : {e}")
+                raise ExceptionGenresAjouterWtf(f"Erreur lors de la suppression du patient : {e}")
 
     elif request.method == "GET":
         strsql_select_patient = "SELECT * FROM t_pationt WHERE id_pationt = %(value_id_pationt)s"

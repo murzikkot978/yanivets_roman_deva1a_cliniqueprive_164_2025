@@ -62,9 +62,16 @@
 					</li>
 
 					<li class="nav-item">
-						<!--		Afficher la liste des medecin dans l'ordre (ASC) et tous les medecin (0)-->
+						<!--		Afficher la liste des consultation dans l'ordre (ASC) et tous les medecin (0)-->
 						<a class="nav-link" href="{{ url_for('consultations_afficher', order_by='ASC', id_consultation_sel=0) }}">Consultation</a>
 					</li>
+
+					<li class="nav-item">
+						<!--		Afficher la liste des specialite dans l'ordre (ASC) et tous les specialite (0)-->
+						<a class="nav-link" href="{{ url_for('specialites_afficher', order_by='ASC', id_specialite_sel=0) }}">Specialite</a>
+					</li>
+
+					
 
 				{#	<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle" href="#" id="navdropdownfilms" role="button"

@@ -100,7 +100,7 @@ def consultation_ajouter_wtf():
                 with DBconnection() as mconn_bd:
                     mconn_bd.execute(strsql_insert, valeurs_insertion)
 
-                flash("Консультация успешно добавлена!", "success")
+                flash("Consultation ajoutée avec succès!", "success")
                 return redirect(url_for('consultations_afficher', order_by='ASC', id_consultation_sel=0))
         except Exception as e:
             raise ExceptionGenresAjouterWtf(f"Ошибка при добавлении consultation : {e}")
@@ -146,7 +146,7 @@ def consultation_update_wtf():
             with DBconnection() as mconn_bd:
                 mconn_bd.execute(strsql_update, valeurs_update)
 
-            flash("Данные консультации успешно обновлены!", "success")
+            flash("Consultation modifiée avec succès!", "success")
             return redirect(url_for('consultations_afficher', order_by='ASC', id_consultation_sel=0))
         except Exception as e:
             raise ExceptionGenresAjouterWtf(f"Ошибка при обновлении consultation : {e}")
@@ -179,7 +179,7 @@ def consultation_delete_wtf():
                 strsql_delete = "DELETE FROM t_consultation WHERE id_consultation = %(value_id_consultation)s"
                 with DBconnection() as mconn_bd:
                     mconn_bd.execute(strsql_delete, {"value_id_consultation": id_consultation_delete})
-                flash("Консультация успешно удалена!", "success")
+                flash("Consultation supprimée avec succès!", "success")
                 return redirect(url_for('consultations_afficher', order_by="ASC", id_consultation_sel=0))
             except Exception as e:
                 raise ExceptionGenresAjouterWtf(f"Ошибка при удалении consultation : {e}")

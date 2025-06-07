@@ -16,7 +16,6 @@ from APP_FILMS_164.database.database_tools import DBconnection
 from APP_FILMS_164.erreurs.exceptions import *
 from APP_FILMS_164.genres.gestion_genres_wtf_forms import FormWTFAjouterGenres
 from APP_FILMS_164.genres.gestion_genres_wtf_forms import FormWTFDeleteGenre
-from APP_FILMS_164.genres.gestion_genres_wtf_forms import FormWTFUpdateGenre
 from APP_FILMS_164.genres.gestion_genres_wtf_forms import FormWTFUpdateMedecin
 
 """
@@ -140,82 +139,6 @@ def medecin_ajouter_wtf():
             raise ExceptionGenresAjouterWtf(f"Ошибка при добавлении нового врача : {e}")
 
     return render_template("medecin/genres_ajouter_wtf.html", form=form)
-"""
-    Auteur : OM 2021.03.29
-    Définition d'une "route" /genre_update
-    
-    Test : ex cliquer sur le menu "medecin" puis cliquer sur le bouton "EDIT" d'un "genre"
-    
-    Paramètres : sans
-    
-    But : Editer(update) un genre qui a été sélectionné dans le formulaire "genres_afficher.html"
-    
-    Remarque :  Dans le champ "nom_genre_update_wtf" du formulaire "medecin/genre_update_wtf.html",
-                le contrôle de la saisie s'effectue ici en Python.
-                On transforme la saisie en minuscules.
-                On ne doit pas accepter des valeurs vides, des valeurs avec des chiffres,
-                des valeurs avec des caractères qui ne sont pas des lettres.
-                Pour comprendre [A-Za-zÀ-ÖØ-öø-ÿ] il faut se reporter à la table ASCII https://www.ascii-code.com/
-                Accepte le trait d'union ou l'apostrophe, et l'espace entre deux mots, mais pas plus d'une occurence.
-"""
-
-
-@app.route("/genre_update", methods=['GET', 'POST'])
-def genre_update_wtf():
-    # L'utilisateur vient de cliquer sur le bouton "EDIT". Récupère la valeur de "id_genre"
-    id_genre_update = request.values['id_genre_btn_edit_html']
-
-    # Objet formulaire pour l'UPDATE
-    form_update = FormWTFUpdateGenre()
-    try:
-        # 2023.05.14 OM S'il y a des listes déroulantes dans le formulaire
-        # La validation pose quelques problèmes
-        if request.method == "POST" and form_update.submit.data:
-            # Récupèrer la valeur du champ depuis "genre_update_wtf.html" après avoir cliqué sur "SUBMIT".
-            # Puis la convertir en lettres minuscules.
-            name_genre_update = form_update.nom_genre_update_wtf.data
-            name_genre_update = name_genre_update.lower()
-            date_genre_essai = form_update.date_genre_wtf_essai.data
-
-            valeur_update_dictionnaire = {"value_id_genre": id_genre_update,
-                                          "value_name_genre": name_genre_update,
-                                          "value_date_genre_essai": date_genre_essai
-                                          }
-            print("valeur_update_dictionnaire ", valeur_update_dictionnaire)
-
-            str_sql_update_intitulegenre = """UPDATE t_genre SET intitule_genre = %(value_name_genre)s, 
-            date_ins_genre = %(value_date_genre_essai)s WHERE id_genre = %(value_id_genre)s """
-            with DBconnection() as mconn_bd:
-                mconn_bd.execute(str_sql_update_intitulegenre, valeur_update_dictionnaire)
-
-            flash(f"Donnée mise à jour !!", "success")
-            print(f"Donnée mise à jour !!")
-
-            # afficher et constater que la donnée est mise à jour.
-            # Affiche seulement la valeur modifiée, "ASC" et l'"id_genre_update"
-            return redirect(url_for('genres_afficher', order_by="ASC", id_genre_sel=id_genre_update))
-        elif request.method == "GET":
-            # Opération sur la BD pour récupérer "id_genre" et "intitule_genre" de la "t_genre"
-            str_sql_id_genre = "SELECT id_genre, intitule_genre, date_ins_genre FROM t_genre " \
-                               "WHERE id_genre = %(value_id_genre)s"
-            valeur_select_dictionnaire = {"value_id_genre": id_genre_update}
-            with DBconnection() as mybd_conn:
-                mybd_conn.execute(str_sql_id_genre, valeur_select_dictionnaire)
-            # Une seule valeur est suffisante "fetchone()", vu qu'il n'y a qu'un seul champ "nom genre" pour l'UPDATE
-            data_nom_genre = mybd_conn.fetchone()
-            print("data_nom_genre ", data_nom_genre, " type ", type(data_nom_genre), " genre ",
-                  data_nom_genre["intitule_genre"])
-
-            # Afficher la valeur sélectionnée dans les champs du formulaire "genre_update_wtf.html"
-            form_update.nom_genre_update_wtf.data = data_nom_genre["intitule_genre"]
-            form_update.date_genre_wtf_essai.data = data_nom_genre["date_ins_genre"]
-
-    except Exception as Exception_genre_update_wtf:
-        raise ExceptionGenreUpdateWtf(f"fichier : {Path(__file__).name}  ;  "
-                                      f"{genre_update_wtf.__name__} ; "
-                                      f"{Exception_genre_update_wtf}")
-
-    return render_template("medecin/genre_update_wtf.html", form_update=form_update)
 
 
 """

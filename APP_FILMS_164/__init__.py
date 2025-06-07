@@ -53,9 +53,8 @@ try:
     from APP_FILMS_164.patients import gestion_patients_crud
     from APP_FILMS_164.patients import gestion_patients_wtf_forms
 
-    from APP_FILMS_164.consultation import gestion_consultations_crud
-    from APP_FILMS_164.consultation import gestion_consultations_wtf_forms
-
+    from APP_FILMS_164.consultations import gestion_consultations_crud
+    from APP_FILMS_164.consultations import gestion_consultations_wtf_forms
 
 
 except Exception as Exception_init_app_films_164:

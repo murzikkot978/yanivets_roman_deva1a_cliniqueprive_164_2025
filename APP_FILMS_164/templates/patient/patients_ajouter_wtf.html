@@ -1,20 +1,66 @@
 {% extends "base.html" %}
-{% block title %} Ajouter un Medecin (WTF) {% endblock %}
+{% block title %} Ajouter un Patient (WTF) {% endblock %}
 {% block body %}
 <div class="container">
 	<div class="row">
 		<div class="col-md-12">
 			<p>
-				Ajouter un nouveau Medecin (WTForms)
+				Ajouter un nouveau Patient (WTForms)
 			</p>
 			<form action="" method="POST" novalidate>
 				<!-- Protection contre les attaques Cross-Site Request Forgery (CSRF) -->
 				{{ form.hidden_tag() }}
+				{{ form.id_patient_hidden() }}
 				<div class="form-group">
 					<p>
-						{{ form.nom_genre_wtf.label }}<br>
-						{{ form.nom_genre_wtf(size=32) }}<br>
-						{% for error in form.nom_genre_wtf.errors %}
+						{{ form.nom_patient_wtf.label }}<br>
+						{{ form.nom_patient_wtf(size=32) }}<br>
+						{% for error in form.nom_patient_wtf.errors %}
+							<span style="color: red;">[{{ error }}]</span>
+						{% endfor %}
+					</p>
+				</div>
+				<div class="form-group">
+					<p>
+						{{ form.prenome_patient_wtf.label }}<br>
+						{{ form.prenome_patient_wtf(size=32) }}<br>
+						{% for error in form.prenome_patient_wtf.errors %}
+							<span style="color: red;">[{{ error }}]</span>
+						{% endfor %}
+					</p>
+				</div>
+				<div class="form-group">
+					<p>
+						{{ form.date_naissance_wtf.label }}<br>
+						{{ form.date_naissance_wtf() }}<br>
+						{% for error in form.date_naissance_wtf.errors %}
+							<span style="color: red;">[{{ error }}]</span>
+						{% endfor %}
+					</p>
+				</div>
+				<div class="form-group">
+					<p>
+						{{ form.adresse_wtf.label }}<br>
+						{{ form.adresse_wtf(size=32) }}<br>
+						{% for error in form.adresse_wtf.errors %}
+							<span style="color: red;">[{{ error }}]</span>
+						{% endfor %}
+					</p>
+				</div>
+				<div class="form-group">
+					<p>
+						{{ form.telephone_wtf.label }}<br>
+						{{ form.telephone_wtf(size=32) }}<br>
+						{% for error in form.telephone_wtf.errors %}
+							<span style="color: red;">[{{ error }}]</span>
+						{% endfor %}
+					</p>
+				</div>
+				<div class="form-group">
+					<p>
+						{{ form.email_wtf.label }}<br>
+						{{ form.email_wtf(size=32) }}<br>
+						{% for error in form.email_wtf.errors %}
 							<span style="color: red;">[{{ error }}]</span>
 						{% endfor %}
 					</p>

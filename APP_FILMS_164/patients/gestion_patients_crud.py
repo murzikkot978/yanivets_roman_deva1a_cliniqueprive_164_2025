@@ -15,6 +15,7 @@ from APP_FILMS_164.erreurs.exceptions import *
 from APP_FILMS_164.patients.gestion_patients_wtf_forms import FormWTFAjouterPatients
 from APP_FILMS_164.patients.gestion_patients_wtf_forms import FormWTFDeletePatient
 from APP_FILMS_164.patients.gestion_patients_wtf_forms import FormWTFUpdatePatient
+from wtforms import HiddenField
 
 """
     Auteur : OM 2021.03.16
@@ -94,6 +95,8 @@ def patients_afficher(order_by, id_patient_sel):
                 Accepte le trait d'union ou l'apostrophe, et l'espace entre deux mots, mais pas plus d'une occurence.
 """
 
+# Добавить скрытое поле для id пациента
+FormWTFAjouterPatients.id_patient_hidden = HiddenField()
 
 @app.route("/patients_ajouter", methods=['GET', 'POST'])
 def patients_ajouter_wtf():
@@ -101,26 +104,35 @@ def patients_ajouter_wtf():
     if request.method == "POST":
         try:
             if form.validate_on_submit():
-                name_patient_wtf = form.nom_patient_wtf.data
-                name_patient = name_patient_wtf.lower()
-                valeurs_insertion_dictionnaire = {"value_intitule_genre": name_patient}
-                print("valeurs_insertion_dictionnaire ", valeurs_insertion_dictionnaire)
-                strsql_insert_patient = """INSERT INTO t_medecin (`id_medecin`, `nom_medecin`, `prenome_medecin`, `telephone`, `fk_specialite`, `email`) VALUES (NULL,%(value_intitule_genre)s) """
+                nom_patient = form.nom_patient_wtf.data
+                # Получите остальные поля из формы, если они есть
+                prenome_patient = request.form.get("prenome_patient_wtf")
+                date_naissance = request.form.get("date_naissance_wtf")
+                adresse = request.form.get("adresse_wtf")
+                telephone = request.form.get("telephone_wtf")
+                email = request.form.get("email_wtf")
+
+                valeurs_insertion = {
+                    "value_nom_pationt": nom_patient,
+                    "value_prenome_pationt": prenome_patient,
+                    "value_date_naissance": date_naissance,
+                    "value_adresse": adresse,
+                    "value_telephone": telephone,
+                    "value_email": email
+                }
+                strsql_insert_patient = """
+                    INSERT INTO t_pationt (nom_pationt, prenome_pationt, date_naissance, adresse, telephone, email)
+                    VALUES (%(value_nom_pationt)s, %(value_prenome_pationt)s, %(value_date_naissance)s, %(value_adresse)s, %(value_telephone)s, %(value_email)s)
+                """
                 with DBconnection() as mconn_bd:
-                    mconn_bd.execute(strsql_insert_patient, valeurs_insertion_dictionnaire)
+                    mconn_bd.execute(strsql_insert_patient, valeurs_insertion)
 
-                flash(f"Données insérées !!", "success")
-                print(f"Données insérées !!")
+                flash(f"Пациент успешно добавлен: {nom_patient}!", "success")
+                return redirect(url_for('patients_afficher', order_by='ASC', id_patient_sel=0))
+        except Exception as e:
+            raise ExceptionGenresAjouterWtf(f"Erreur при добавлении нового пациента : {e}")
 
-                # Pour afficher et constater l'insertion de la valeur, on affiche en ordre inverse. (DESC)
-                return redirect(url_for('patients_afficher', order_by='DESC', id_patient_sel=0))
-
-        except Exception as Exception_patients_ajouter_wtf:
-            raise ExceptionGenresAjouterWtf(f"fichier : {Path(__file__).name}  ;  "
-                                            f"{patients_ajouter_wtf.__name__} ; "
-                                            f"{Exception_patients_ajouter_wtf}")
-
-    return render_template("medecin/patients_ajouter_wtf.html", form=form)
+    return render_template("patient/patients_ajouter_wtf.html", form=form)
 
 
 """
@@ -143,62 +155,66 @@ def patients_ajouter_wtf():
 """
 
 
-@app.route("/patient_update", methods=['GET', 'POST'])
+@app.route("/patient_update_wtf", methods=['GET', 'POST'])
 def patient_update_wtf():
-    # L'utilisateur vient de cliquer sur le bouton "EDIT". Récupère la valeur de "id_genre"
-    id_patient_update = request.values['id_patient_btn_edit_html']
+    from APP_FILMS_164.patients.gestion_patients_wtf_forms import FormWTFUpdatePatient
+    form = FormWTFUpdatePatient()
+    if request.method == "POST":
+        id_patient_update = form.id_patient_hidden.data
+    else:
+        id_patient_update = request.values.get('id_patient_btn_edit_html')
 
-    # Objet formulaire pour l'UPDATE
-    form_update = FormWTFUpdatePatient()
-    try:
-        # 2023.05.14 OM S'il y a des listes déroulantes dans le formulaire
-        # La validation pose quelques problèmes
-        if request.method == "POST" and form_update.submit.data:
-            # Récupèrer la valeur du champ depuis "patient_update_wtf.html" après avoir cliqué sur "SUBMIT".
-            # Puis la convertir en lettres minuscules.
-            name_patient_update = form_update.nom_patient_update_wtf.data
-            name_patient_update = name_patient_update.lower()
-            date_patient_essai = form_update.date_patient_wtf_essai.data
+    if request.method == "POST" and form.validate_on_submit():
+        try:
+            nom_patient = form.nom_patient_update_wtf.data
+            prenome_patient = form.prenome_patient_update_wtf.data
+            date_naissance = form.date_naissance_update_wtf.data
+            adresse = form.adresse_update_wtf.data
+            telephone = form.telephone_update_wtf.data
+            email = form.email_update_wtf.data
 
-            valeur_update_dictionnaire = {"value_id_genre": id_patient_update,
-                                          "value_name_genre": name_patient_update,
-                                          "value_date_genre_essai": date_patient_essai
-                                          }
-            print("valeur_update_dictionnaire ", valeur_update_dictionnaire)
-
-            str_sql_update_intitulegenre = """UPDATE t_pationt SET intitule_genre = %(value_name_patient)s, 
-            date_ins_genre = %(value_date_genre_essai)s WHERE id_genre = %(value_id_genre)s """
+            valeurs_update = {
+                "value_id_pationt": id_patient_update,
+                "value_nom_pationt": nom_patient,
+                "value_prenome_pationt": prenome_patient,
+                "value_date_naissance": date_naissance,
+                "value_adresse": adresse,
+                "value_telephone": telephone,
+                "value_email": email
+            }
+            strsql_update_patient = """
+                UPDATE t_pationt
+                SET nom_pationt = %(value_nom_pationt)s,
+                    prenome_pationt = %(value_prenome_pationt)s,
+                    date_naissance = %(value_date_naissance)s,
+                    adresse = %(value_adresse)s,
+                    telephone = %(value_telephone)s,
+                    email = %(value_email)s
+                WHERE id_pationt = %(value_id_pationt)s
+            """
             with DBconnection() as mconn_bd:
-                mconn_bd.execute(str_sql_update_intitulegenre, valeur_update_dictionnaire)
+                mconn_bd.execute(strsql_update_patient, valeurs_update)
 
-            flash(f"Donnée mise à jour !!", "success")
-            print(f"Donnée mise à jour !!")
+            flash(f"Данные пациента успешно обновлены: {nom_patient}!", "success")
+            return redirect(url_for('patients_afficher', order_by='ASC', id_patient_sel=0))
+        except Exception as e:
+            raise ExceptionGenresAjouterWtf(f"Ошибка при обновлении пациента : {e}")
 
-            # afficher et constater que la donnée est mise à jour.
-            # Affiche seulement la valeur modifiée, "ASC" et l'"id_genre_update"
-            return redirect(url_for('patients_afficher', order_by="ASC", id_patient_sel=id_patient_update))
-        elif request.method == "GET":
-            # Opération sur la BD pour récupérer "id_genre" et "intitule_genre" de la "t_genre"
-            str_sql_id_patient = "SELECT id_genre, intitule_genre, date_ins_genre FROM t_genre " \
-                               "WHERE id_genre = %(value_id_genre)s"
-            valeur_select_dictionnaire = {"value_id_patient": id_patient_update}
-            with DBconnection() as mybd_conn:
-                mybd_conn.execute(str_sql_id_patient, valeur_select_dictionnaire)
-            # Une seule valeur est suffisante "fetchone()", vu qu'il n'y a qu'un seul champ "nom patient" pour l'UPDATE
-            data_nom_genre = mybd_conn.fetchone()
-            print("data_nom_genre ", data_nom_genre, " type ", type(data_nom_genre), " patient ",
-                  data_nom_genre["intitule_genre"])
+    elif request.method == "GET":
+        strsql_select_patient = "SELECT * FROM t_pationt WHERE id_pationt = %(value_id_pationt)s"
+        with DBconnection() as mconn_bd:
+            mconn_bd.execute(strsql_select_patient, {"value_id_pationt": id_patient_update})
+            data_patient = mconn_bd.fetchone()
+            if data_patient:
+                form.id_patient_hidden.data = data_patient["id_pationt"]
+                form.nom_patient_update_wtf.data = data_patient["nom_pationt"]
+                form.prenome_patient_update_wtf.data = data_patient["prenome_pationt"]
+                form.date_naissance_update_wtf.data = data_patient["date_naissance"]
+                form.adresse_update_wtf.data = data_patient["adresse"]
+                form.telephone_update_wtf.data = data_patient["telephone"]
+                form.email_update_wtf.data = data_patient["email"]
 
-            # Afficher la valeur sélectionnée dans les champs du formulaire "patient_update_wtf.html"
-            form_update.nom_genre_update_wtf.data = data_nom_genre["intitule_genre"]
-            form_update.date_genre_wtf_essai.data = data_nom_genre["date_ins_genre"]
-
-    except Exception as Exception_patient_update_wtf:
-        raise ExceptionGenreUpdateWtf(f"fichier : {Path(__file__).name}  ;  "
-                                      f"{patient_update_wtf.__name__} ; "
-                                      f"{Exception_patient_update_wtf}")
-
-    return render_template("medecin/patient_update_wtf.html", form_update=form_update)
+    return render_template("patient/patient_update_wtf.html", form_update=form)
 
 
 """
@@ -216,92 +232,34 @@ def patient_update_wtf():
 """
 
 
-@app.route("/patient_delete", methods=['GET', 'POST'])
+@app.route("/patient_delete_wtf", methods=['GET', 'POST'])
 def patient_delete_wtf():
-    data_films_attribue_patient_delete = None
-    btn_submit_del = None
-    # L'utilisateur vient de cliquer sur le bouton "DELETE". Récupère la valeur de "id_genre"
-    id_patient_delete = request.values['id_patient_btn_delete_html']
-
-    # Objet formulaire pour effacer le patient sélectionné.
+    from APP_FILMS_164.patients.gestion_patients_wtf_forms import FormWTFDeletePatient
+    id_patient_delete = request.values.get('id_patient_btn_delete_html')
     form_delete = FormWTFDeletePatient()
-    try:
-        print(" on submit ", form_delete.validate_on_submit())
-        if request.method == "POST" and form_delete.validate_on_submit():
-
-            if form_delete.submit_btn_annuler.data:
-                return redirect(url_for("patients_afficher", order_by="ASC", id_patient_sel=0))
-
-            if form_delete.submit_btn_conf_del.data:
-                # Récupère les données afin d'afficher à nouveau
-                # le formulaire "medecin/genre_delete_wtf.html" lorsque le bouton "Etes-vous sur d'effacer ?" est cliqué.
-                data_films_attribue_genre_delete = session['data_films_attribue_genre_delete']
-                print("data_films_attribue_genre_delete ", data_films_attribue_genre_delete)
-
-                flash(f"Effacer le patient de façon définitive de la BD !!!", "danger")
-                # L'utilisateur vient de cliquer sur le bouton de confirmation pour effacer...
-                # On affiche le bouton "Effacer patient" qui va irrémédiablement EFFACER le patient
-                btn_submit_del = True
-
-            if form_delete.submit_btn_del.data:
-                valeur_delete_dictionnaire = {"value_id_genre": id_patient_delete}
-                print("valeur_delete_dictionnaire ", valeur_delete_dictionnaire)
-
-                str_sql_delete_films_genre = """DELETE FROM t_genre_film WHERE fk_genre = %(value_id_genre)s"""
-                str_sql_delete_idgenre = """DELETE FROM t_genre WHERE id_genre = %(value_id_genre)s"""
-                # Manière brutale d'effacer d'abord la "fk_genre", même si elle n'existe pas dans la "t_genre_film"
-                # Ensuite on peut effacer le patient vu qu'il n'est plus "lié" (INNODB) dans la "t_genre_film"
+    patient_nom = ""
+    if request.method == "POST" and form_delete.validate_on_submit():
+        if form_delete.submit_btn_annuler.data:
+            return redirect(url_for("patients_afficher", order_by="ASC", id_patient_sel=0))
+        if form_delete.submit_btn_conf_del.data:
+            return render_template("patient/patient_delete_wtf.html", form_delete=form_delete, btn_submit_del=True, patient_nom=patient_nom)
+        if form_delete.submit_btn_del.data:
+            try:
+                strsql_delete_patient = "DELETE FROM t_pationt WHERE id_pationt = %(value_id_pationt)s"
                 with DBconnection() as mconn_bd:
-                    mconn_bd.execute(str_sql_delete_films_genre, valeur_delete_dictionnaire)
-                    mconn_bd.execute(str_sql_delete_idgenre, valeur_delete_dictionnaire)
-
-                flash(f"Genre définitivement effacé !!", "success")
-                print(f"Genre définitivement effacé !!")
-
-                # afficher les données
+                    mconn_bd.execute(strsql_delete_patient, {"value_id_pationt": id_patient_delete})
+                flash("Пациент успешно удалён!", "success")
                 return redirect(url_for('patients_afficher', order_by="ASC", id_patient_sel=0))
+            except Exception as e:
+                raise ExceptionGenresAjouterWtf(f"Ошибка при удалении пациента : {e}")
 
-        if request.method == "GET":
-            valeur_select_dictionnaire = {"value_id_genre": id_patient_delete}
-            print(id_patient_delete, type(id_patient_delete))
+    elif request.method == "GET":
+        strsql_select_patient = "SELECT * FROM t_pationt WHERE id_pationt = %(value_id_pationt)s"
+        with DBconnection() as mconn_bd:
+            mconn_bd.execute(strsql_select_patient, {"value_id_pationt": id_patient_delete})
+            data_patient = mconn_bd.fetchone()
+            if data_patient:
+                patient_nom = f"{data_patient['nom_pationt']} {data_patient['prenome_pationt']}"
+                form_delete.nom_patient_delete_wtf.data = patient_nom
 
-            # Requête qui affiche tous les facture qui ont le patient que l'utilisateur veut effacer
-            str_sql_genres_films_delete = """SELECT id_genre_film, nom_film, id_genre, intitule_genre FROM t_genre_film 
-                                            INNER JOIN t_film ON t_genre_film.fk_film = t_film.id_film
-                                            INNER JOIN t_genre ON t_genre_film.fk_genre = t_genre.id_genre
-                                            WHERE fk_genre = %(value_id_genre)s"""
-
-            with DBconnection() as mydb_conn:
-                mydb_conn.execute(str_sql_genres_films_delete, valeur_select_dictionnaire)
-                data_films_attribue_genre_delete = mydb_conn.fetchall()
-                print("data_films_attribue_genre_delete...", data_films_attribue_genre_delete)
-
-                # Nécessaire pour mémoriser les données afin d'afficher à nouveau
-                # le formulaire "medecin/genre_delete_wtf.html" lorsque le bouton "Etes-vous sur d'effacer ?" est cliqué.
-                session['data_films_attribue_genre_delete'] = data_films_attribue_genre_delete
-
-                # Opération sur la BD pour récupérer "id_genre" et "intitule_genre" de la "t_genre"
-                str_sql_id_patient = "SELECT id_genre, intitule_genre FROM t_genre WHERE id_genre = %(value_id_genre)s"
-
-                mydb_conn.execute(str_sql_id_patient, valeur_select_dictionnaire)
-                # Une seule valeur est suffisante "fetchone()",
-                # vu qu'il n'y a qu'un seul champ "nom patient" pour l'action DELETE
-                data_nom_genre = mydb_conn.fetchone()
-                print("data_nom_genre ", data_nom_genre, " type ", type(data_nom_genre), " patient ",
-                      data_nom_genre["intitule_genre"])
-
-            # Afficher la valeur sélectionnée dans le champ du formulaire "genre_delete_wtf.html"
-            form_delete.nom_genre_delete_wtf.data = data_nom_genre["intitule_genre"]
-
-            # Le bouton pour l'action "DELETE" dans le form. "genre_delete_wtf.html" est caché.
-            btn_submit_del = False
-
-    except Exception as Exception_genre_delete_wtf:
-        raise ExceptionGenreDeleteWtf(f"fichier : {Path(__file__).name}  ;  "
-                                      f"{patient_delete_wtf.__name__} ; "
-                                      f"{Exception_genre_delete_wtf}")
-
-    return render_template("medecin/genre_delete_wtf.html",
-                           form_delete=form_delete,
-                           btn_submit_del=btn_submit_del,
-                           data_films_associes=data_films_attribue_genre_delete)
+    return render_template("patient/patient_delete_wtf.html", form_delete=form_delete, btn_submit_del=False, patient_nom=patient_nom, data_films_associes=None)

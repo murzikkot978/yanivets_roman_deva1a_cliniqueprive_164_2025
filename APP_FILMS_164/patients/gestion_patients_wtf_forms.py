@@ -5,7 +5,7 @@
 """
 from flask_wtf import FlaskForm
 from wtforms import StringField, DateField
-from wtforms import SubmitField
+from wtforms import SubmitField, HiddenField
 from wtforms.validators import Length, InputRequired, DataRequired
 from wtforms.validators import Regexp
 
@@ -16,34 +16,31 @@ class FormWTFAjouterPatients(FlaskForm):
         Définition d'un "bouton" submit avec un libellé personnalisé.
     """
     nom_patient_regexp = "^([A-Z]|[a-zÀ-ÖØ-öø-ÿ])[A-Za-zÀ-ÖØ-öø-ÿ]*['\- ]?[A-Za-zÀ-ÖØ-öø-ÿ]+$"
-    nom_patient_wtf = StringField("Clavioter le patient ", validators=[Length(min=2, max=20, message="min 2 max 20"),
-                                                                   Regexp(nom_patient_regexp,
-                                                                          message="Pas de chiffres, de caractères "
-                                                                                  "spéciaux, "
-                                                                                  "d'espace à double, de double "
-                                                                                  "apostrophe, de double trait union")
-                                                                   ])
+    nom_patient_wtf = StringField("Имя", validators=[Length(min=2, max=20, message="min 2 max 20"),
+                                                    Regexp(nom_patient_regexp, message="Некорректное имя")])
+    prenome_patient_wtf = StringField("Фамилия", validators=[Length(min=2, max=20, message="min 2 max 20")])
+    date_naissance_wtf = DateField("Дата рождения", validators=[InputRequired("Дата обязательна")])
+    adresse_wtf = StringField("Адрес", validators=[Length(min=2, max=50, message="min 2 max 50")])
+    telephone_wtf = StringField("Телефон", validators=[Length(min=6, max=20, message="min 6 max 20")])
+    email_wtf = StringField("Email", validators=[Length(min=5, max=100, message="min 5 max 100")])
+    id_patient_hidden = HiddenField()
     submit = SubmitField("Enregistrer patient")
 
 
 class FormWTFUpdatePatient(FlaskForm):
     """
-        Dans le formulaire "genre_update_wtf.html" on impose que le champ soit rempli.
-        Définition d'un "bouton" submit avec un libellé personnalisé.
+        Formulaire complet pour l'édition d'un patient (как для врача).
     """
     nom_patient_update_regexp = "^([A-Z]|[a-zÀ-ÖØ-öø-ÿ])[A-Za-zÀ-ÖØ-öø-ÿ]*['\- ]?[A-Za-zÀ-ÖØ-öø-ÿ]+$"
-    nom_Patient_update_wtf = StringField("Clavioter le patient ", validators=[Length(min=2, max=20, message="min 2 max 20"),
-                                                                          Regexp(nom_patient_update_regexp,
-                                                                                 message="Pas de chiffres, de "
-                                                                                         "caractères "
-                                                                                         "spéciaux, "
-                                                                                         "d'espace à double, de double "
-                                                                                         "apostrophe, de double trait "
-                                                                                         "union")
-                                                                          ])
-    date_patient_wtf_essai = DateField("Essai date", validators=[InputRequired("Date obligatoire"),
-                                                               DataRequired("Date non valide")])
-    submit = SubmitField("Update patient")
+    nom_patient_update_wtf = StringField("Имя", validators=[Length(min=2, max=20, message="min 2 max 20"),
+                                                           Regexp(nom_patient_update_regexp, message="Некорректное имя")])
+    prenome_patient_update_wtf = StringField("Фамилия", validators=[Length(min=2, max=20, message="min 2 max 20")])
+    date_naissance_update_wtf = DateField("Дата рождения", validators=[InputRequired("Дата обязательна")])
+    adresse_update_wtf = StringField("Адрес", validators=[Length(min=2, max=50, message="min 2 max 50")])
+    telephone_update_wtf = StringField("Телефон", validators=[Length(min=6, max=20, message="min 6 max 20")])
+    email_update_wtf = StringField("Email", validators=[Length(min=5, max=100, message="min 5 max 100")])
+    id_patient_hidden = HiddenField()
+    submit = SubmitField("Сохранить изменения")
 
 
 class FormWTFDeletePatient(FlaskForm):

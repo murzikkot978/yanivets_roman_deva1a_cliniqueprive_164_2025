@@ -1,18 +1,18 @@
 {% extends "base.html" %}
 {% block title %}
     {% if update_mode %}
-        Редактировать врача
+        Modifier un médecin
     {% else %}
-        Добавление нового врача
+        Ajouter un nouveau médecin
     {% endif %}
 {% endblock %}
 {% block body %}
 <div class="container">
     <h1>
         {% if update_mode %}
-            Редактировать врача
+            Modifier un médecin
         {% else %}
-            Добавить врача
+            Ajouter un médecin
         {% endif %}
     </h1>
     <form method="POST" action="" novalidate>
@@ -40,10 +40,10 @@
             {{ form.specialite_wtf(class="form-control") }}
         </div>
 
-        <!-- Кнопка отправки -->
+        <!-- Bouton d'envoi -->
         <button type="submit" class="btn btn-success">
             {% if update_mode %}
-                Сохранить изменения
+                Enregistrer les modifications
             {% else %}
                 {{ form.submit.label }}
             {% endif %}

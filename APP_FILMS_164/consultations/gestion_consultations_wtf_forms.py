@@ -62,23 +62,23 @@ class FormWTFDeleteConsultation(FlaskForm):
 
 
 class FormWTFAjouterConsultations(FlaskForm):
-    fk_medecin = SelectField("Врач", coerce=int, validators=[DataRequired()])
-    fk_patient = SelectField("Пациент", coerce=int, validators=[DataRequired()])
-    date_consultation = DateField("Дата консультации", validators=[InputRequired("Дата обязательна")])
+    fk_medecin = SelectField("Médecin", coerce=int, validators=[DataRequired()])
+    fk_patient = SelectField("Patient", coerce=int, validators=[DataRequired()])
+    date_consultation = DateField("Date de consultation", validators=[InputRequired("Date obligatoire")])
     id_consultation_hidden = HiddenField()
-    submit = SubmitField("Добавить консультацию")
+    submit = SubmitField("Ajouter la consultation")
 
 
 class FormWTFUpdateConsultation(FlaskForm):
-    fk_medecin = SelectField("Врач", coerce=int, validators=[DataRequired()])
-    fk_patient = SelectField("Пациент", coerce=int, validators=[DataRequired()])
-    date_consultation = DateField("Дата консультации", validators=[InputRequired("Дата обязательна")])
+    fk_medecin = SelectField("Médecin", coerce=int, validators=[DataRequired()])
+    fk_patient = SelectField("Patient", coerce=int, validators=[DataRequired()])
+    date_consultation = DateField("Date de consultation", validators=[InputRequired("Date obligatoire")])
     id_consultation_hidden = HiddenField()
-    submit = SubmitField("Сохранить изменения")
+    submit = SubmitField("Enregistrer les modifications")
 
 
 class FormWTFDeleteConsultation(FlaskForm):
-    nom_genre_delete_wtf = StringField("Информация о консультации")
-    submit_btn_del = SubmitField("Удалить консультацию")
-    submit_btn_conf_del = SubmitField("Вы уверены, что хотите удалить?")
-    submit_btn_annuler = SubmitField("Отмена")
+    nom_genre_delete_wtf = StringField("Information sur la consultation")
+    submit_btn_del = SubmitField("Supprimer la consultation")
+    submit_btn_conf_del = SubmitField("Êtes-vous sûr de vouloir supprimer ?")
+    submit_btn_annuler = SubmitField("Annuler")

@@ -15,12 +15,12 @@ class FormWTFAjouterFactures(FlaskForm):
         Dans le formulaire "genres_ajouter_wtf.html" on impose que le champ soit rempli.
         Définition d'un "bouton" submit avec un libellé personnalisé.
     """
-    fk_pationt = SelectField("Пациент", coerce=int, validators=[DataRequired()])
-    montant = IntegerField("Сумма", validators=[InputRequired(), NumberRange(min=0)])
-    date_emission = DateField("Дата выставления", validators=[InputRequired("Дата обязательна")])
-    fk_consultation = SelectField("Консультация", coerce=int, validators=[DataRequired()])
+    fk_pationt = SelectField("Patient", coerce=int, validators=[DataRequired()])
+    montant = IntegerField("Montant", validators=[InputRequired(), NumberRange(min=0)])
+    date_emission = DateField("Date d'émission", validators=[InputRequired("Date obligatoire")])
+    fk_consultation = SelectField("Consultation", coerce=int, validators=[DataRequired()])
     id_facture_hidden = HiddenField()
-    submit = SubmitField("Добавить фактуру")
+    submit = SubmitField("Ajouter la facture")
 
 
 class FormWTFDeleteFacture(FlaskForm):
@@ -32,16 +32,16 @@ class FormWTFDeleteFacture(FlaskForm):
         submit_btn_conf_del : Bouton de confirmation pour effacer un "genre".
         submit_btn_annuler : Bouton qui permet d'afficher la table "t_genre".
     """
-    nom_genre_delete_wtf = StringField("Информация о фактуре")
-    submit_btn_del = SubmitField("Удалить фактуру")
-    submit_btn_conf_del = SubmitField("Вы уверены, что хотите удалить?")
-    submit_btn_annuler = SubmitField("Отмена")
+    nom_genre_delete_wtf = StringField("Information sur la facture")
+    submit_btn_del = SubmitField("Supprimer la facture")
+    submit_btn_conf_del = SubmitField("Êtes-vous sûr de vouloir supprimer ?")
+    submit_btn_annuler = SubmitField("Annuler")
 
 
 class FormWTFUpdateFacture(FlaskForm):
-    fk_pationt = SelectField("Пациент", coerce=int, validators=[DataRequired()])
-    montant = IntegerField("Сумма", validators=[InputRequired(), NumberRange(min=0)])
-    date_emission = DateField("Дата выставления", validators=[InputRequired("Дата обязательна")])
-    fk_consultation = SelectField("Консультация", coerce=int, validators=[DataRequired()])
+    fk_pationt = SelectField("Patient", coerce=int, validators=[DataRequired()])
+    montant = IntegerField("Montant", validators=[InputRequired(), NumberRange(min=0)])
+    date_emission = DateField("Date d'émission", validators=[InputRequired("Date obligatoire")])
+    fk_consultation = SelectField("Consultation", coerce=int, validators=[DataRequired()])
     id_facture_hidden = HiddenField()
-    submit = SubmitField("Сохранить изменения")
+    submit = SubmitField("Enregistrer les modifications")

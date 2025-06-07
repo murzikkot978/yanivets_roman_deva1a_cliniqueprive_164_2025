@@ -12,9 +12,9 @@
                 <thead>
                     <tr>
                         <th class="align-middle">id_consultation</th>
-                        <th class="align-middle">Врач</th>
-                        <th class="align-middle">Пациент</th>
-                        <th class="align-middle">Дата консультации</th>
+                        <th class="align-middle">Médecin</th>
+                        <th class="align-middle">Patient</th>
+                        <th class="align-middle">Date de consultation</th>
                         <th class="align-middle"></th>
                     </tr>
                 </thead>
@@ -30,10 +30,10 @@
                             <a class="btn btn-primary" href="{{ url_for('consultation_ajouter_wtf') }}" role="button">Ajouter</a>
                         </td>
                         <td class="text-center align-middle">
-                            <a class="btn btn-warning" href="{{ url_for('consultation_update_wtf', id_consultation_btn_edit_html=row.id_consultation) }}" role="button">Edit</a>
+                            <a class="btn btn-warning" href="{{ url_for('consultation_update_wtf', id_consultation_btn_edit_html=row.id_consultation) }}" role="button">Modifier</a>
                         </td>
                         <td class="text-center align-middle">
-                            <a class="btn btn-danger" href="{{ url_for('consultation_delete_wtf', id_consultation_btn_delete_html=row.id_consultation) }}" role="button">Delete</a>
+                            <a class="btn btn-danger" href="{{ url_for('consultation_delete_wtf', id_consultation_btn_delete_html=row.id_consultation) }}" role="button">Supprimer</a>
                         </td>
                     </tr>
                 </tbody>
@@ -41,7 +41,7 @@
                 <tbody>
                     <tr>
                         <td>
-                            Aucun consultation.
+                            Aucune consultation.
                         </td>
                         <td>
                             <a class="btn btn-primary" href="{{ url_for('consultation_ajouter_wtf') }}" role="button">Ajouter</a>

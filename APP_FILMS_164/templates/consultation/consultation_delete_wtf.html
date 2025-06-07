@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-{% block title %} Удалить консультацию {% endblock %}
+{% block title %} Supprimer une consultation {% endblock %}
 {% block body %}
 <div class="container">
-    <h1>Удалить консультацию</h1>
+    <h1>Supprimer une consultation</h1>
     <form action="" method="POST" novalidate>
         {{ form_delete.hidden_tag() }}
         <div class="form-group">
-            <label>Информация о консультации:</label>
+            <label>Information sur la consultation :</label>
             {{ form_delete.nom_genre_delete_wtf(class="form-control", readonly=true) }}
         </div>
         {{ form_delete.submit_btn_conf_del(class="btn btn-info") }}

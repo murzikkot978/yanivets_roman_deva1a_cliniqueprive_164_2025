@@ -16,15 +16,15 @@ class FormWTFAjouterPatients(FlaskForm):
         Définition d'un "bouton" submit avec un libellé personnalisé.
     """
     nom_patient_regexp = "^([A-Z]|[a-zÀ-ÖØ-öø-ÿ])[A-Za-zÀ-ÖØ-öø-ÿ]*['\- ]?[A-Za-zÀ-ÖØ-öø-ÿ]+$"
-    nom_patient_wtf = StringField("Имя", validators=[Length(min=2, max=20, message="min 2 max 20"),
-                                                    Regexp(nom_patient_regexp, message="Некорректное имя")])
-    prenome_patient_wtf = StringField("Фамилия", validators=[Length(min=2, max=20, message="min 2 max 20")])
+    nom_patient_wtf = StringField("Prénom", validators=[Length(min=2, max=20, message="min 2 max 20"),
+                                                    Regexp(nom_patient_regexp, message="Nom incorrect")])
+    prenome_patient_wtf = StringField("Nom", validators=[Length(min=2, max=20, message="min 2 max 20")])
     date_naissance_wtf = DateField("Дата рождения", validators=[InputRequired("Дата обязательна")])
-    adresse_wtf = StringField("Адрес", validators=[Length(min=2, max=50, message="min 2 max 50")])
-    telephone_wtf = StringField("Телефон", validators=[Length(min=6, max=20, message="min 6 max 20")])
+    adresse_wtf = StringField("Adresse", validators=[Length(min=2, max=50, message="min 2 max 50")])
+    telephone_wtf = StringField("Téléphone", validators=[Length(min=6, max=20, message="min 6 max 20")])
     email_wtf = StringField("Email", validators=[Length(min=5, max=100, message="min 5 max 100")])
     id_patient_hidden = HiddenField()
-    submit = SubmitField("Enregistrer patient")
+    submit = SubmitField("Enregistrer le patient")
 
 
 class FormWTFUpdatePatient(FlaskForm):
@@ -32,15 +32,15 @@ class FormWTFUpdatePatient(FlaskForm):
         Formulaire complet pour l'édition d'un patient (как для врача).
     """
     nom_patient_update_regexp = "^([A-Z]|[a-zÀ-ÖØ-öø-ÿ])[A-Za-zÀ-ÖØ-öø-ÿ]*['\- ]?[A-Za-zÀ-ÖØ-öø-ÿ]+$"
-    nom_patient_update_wtf = StringField("Имя", validators=[Length(min=2, max=20, message="min 2 max 20"),
-                                                           Regexp(nom_patient_update_regexp, message="Некорректное имя")])
-    prenome_patient_update_wtf = StringField("Фамилия", validators=[Length(min=2, max=20, message="min 2 max 20")])
+    nom_patient_update_wtf = StringField("Prénom", validators=[Length(min=2, max=20, message="min 2 max 20"),
+                                                           Regexp(nom_patient_update_regexp, message="Nom incorrect")])
+    prenome_patient_update_wtf = StringField("Nom", validators=[Length(min=2, max=20, message="min 2 max 20")])
     date_naissance_update_wtf = DateField("Дата рождения", validators=[InputRequired("Дата обязательна")])
-    adresse_update_wtf = StringField("Адрес", validators=[Length(min=2, max=50, message="min 2 max 50")])
-    telephone_update_wtf = StringField("Телефон", validators=[Length(min=6, max=20, message="min 6 max 20")])
+    adresse_update_wtf = StringField("Adresse", validators=[Length(min=2, max=50, message="min 2 max 50")])
+    telephone_update_wtf = StringField("Téléphone", validators=[Length(min=6, max=20, message="min 6 max 20")])
     email_update_wtf = StringField("Email", validators=[Length(min=5, max=100, message="min 5 max 100")])
     id_patient_hidden = HiddenField()
-    submit = SubmitField("Сохранить изменения")
+    submit = SubmitField("Enregistrer les modifications")
 
 
 class FormWTFDeletePatient(FlaskForm):
@@ -52,7 +52,7 @@ class FormWTFDeletePatient(FlaskForm):
         submit_btn_conf_del : Bouton de confirmation pour effacer un "genre".
         submit_btn_annuler : Bouton qui permet d'afficher la table "t_genre".
     """
-    nom_patient_delete_wtf = StringField("Effacer ce patient")
-    submit_btn_del = SubmitField("Effacer patient")
-    submit_btn_conf_del = SubmitField("Etes-vous sur d'effacer ?")
+    nom_patient_delete_wtf = StringField("Supprimer ce patient")
+    submit_btn_del = SubmitField("Supprimer le patient")
+    submit_btn_conf_del = SubmitField("Êtes-vous sûr de vouloir supprimer ?")
     submit_btn_annuler = SubmitField("Annuler")

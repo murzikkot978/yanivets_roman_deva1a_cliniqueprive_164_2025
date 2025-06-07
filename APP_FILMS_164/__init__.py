@@ -44,17 +44,14 @@ try:
     from APP_FILMS_164.genres import gestion_genres_crud
     from APP_FILMS_164.demos_om_164 import routes_demos
 
-    from APP_FILMS_164.films_genres import gestion_films_genres_crud
-    from APP_FILMS_164.erreurs import msg_avertissements
-
-    from APP_FILMS_164.films import gestion_films_crud
-    from APP_FILMS_164.films import gestion_films_wtf_forms
-
     from APP_FILMS_164.patients import gestion_patients_crud
     from APP_FILMS_164.patients import gestion_patients_wtf_forms
 
     from APP_FILMS_164.consultations import gestion_consultations_crud
     from APP_FILMS_164.consultations import gestion_consultations_wtf_forms
+
+    from APP_FILMS_164.factures import gestion_factures_crud
+    from APP_FILMS_164.factures import gestion_factures_wtf_forms
 
 
 except Exception as Exception_init_app_films_164:

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %} Редактировать фактуру {% endblock %}
+{% block body %}
+<div class="container">
+    <h1>Редактировать фактуру</h1>
+    <form action="" method="POST" novalidate>
+        {{ form_update.hidden_tag() }}
+        {{ form_update.id_facture_hidden() }}
+        <div class="form-group">
+            {{ form_update.fk_pationt.label }}
+            {{ form_update.fk_pationt(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form_update.montant.label }}
+            {{ form_update.montant(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form_update.date_emission.label }}
+            {{ form_update.date_emission(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form_update.fk_consultation.label }}
+            {{ form_update.fk_consultation(class="form-control") }}
+        </div>
+        <button type="submit" class="btn btn-success">
+            {{ form_update.submit.label }}
+        </button>
+    </form>
+</div>
+{% endblock %}

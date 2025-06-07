@@ -1,28 +1,53 @@
 {% extends "base.html" %}
-{% block title %} Ajouter un Medecin (WTF) {% endblock %}
+{% block title %}
+    {% if update_mode %}
+        Редактировать врача
+    {% else %}
+        Добавление нового врача
+    {% endif %}
+{% endblock %}
 {% block body %}
 <div class="container">
-	<div class="row">
-		<div class="col-md-12">
-			<p>
-				Ajouter un nouveau Medecin (WTForms)
-			</p>
-			<form action="" method="POST" novalidate>
-				<!-- Protection contre les attaques Cross-Site Request Forgery (CSRF) -->
-				{{ form.hidden_tag() }}
-				<div class="form-group">
-					<p>
-						{{ form.nom_genre_wtf.label }}<br>
-						{{ form.nom_genre_wtf(size=32) }}<br>
-						{% for error in form.nom_genre_wtf.errors %}
-							<span style="color: red;">[{{ error }}]</span>
-						{% endfor %}
-					</p>
-				</div>
-				{{ form.submit(class="btn btn-primary") }}
-			</form>
-		</div>
-	</div>
+    <h1>
+        {% if update_mode %}
+            Редактировать врача
+        {% else %}
+            Добавить врача
+        {% endif %}
+    </h1>
+    <form method="POST" action="" novalidate>
+        {{ form.hidden_tag() }}
+        {{ form.id_medecin_hidden() }}
+
+        <div class="form-group">
+            {{ form.nom_medecin_wtf.label }}
+            {{ form.nom_medecin_wtf(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.prenome_medecin_wtf.label }}
+            {{ form.prenome_medecin_wtf(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.telephone_wtf.label }}
+            {{ form.telephone_wtf(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.email_wtf.label }}
+            {{ form.email_wtf(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.specialite_wtf.label }}
+            {{ form.specialite_wtf(class="form-control") }}
+        </div>
+
+        <!-- Кнопка отправки -->
+        <button type="submit" class="btn btn-success">
+            {% if update_mode %}
+                Сохранить изменения
+            {% else %}
+                {{ form.submit.label }}
+            {% endif %}
+        </button>
+    </form>
 </div>
 {% endblock %}
-

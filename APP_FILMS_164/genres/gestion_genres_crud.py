@@ -8,6 +8,8 @@ from flask import redirect
 from flask import request
 from flask import session
 from flask import url_for
+from flask import render_template, flash  # already imported
+from wtforms import HiddenField
 
 from APP_FILMS_164 import app
 from APP_FILMS_164.database.database_tools import DBconnection
@@ -96,33 +98,47 @@ def genres_afficher(order_by, id_genre_sel):
 
 
 @app.route("/genres_ajouter", methods=['GET', 'POST'])
-def genres_ajouter_wtf():
+def medecin_ajouter_wtf():
     form = FormWTFAjouterGenres()
+    # Fetch specialites for the select field
+    with DBconnection() as mconn_bd:
+        mconn_bd.execute("SELECT id_specialite, nom_specialite FROM t_specialite")
+        specialites = mconn_bd.fetchall()
+        form.specialite_wtf.choices = [(row["id_specialite"], row["nom_specialite"]) for row in specialites]
+
     if request.method == "POST":
         try:
             if form.validate_on_submit():
-                name_genre_wtf = form.nom_genre_wtf.data
-                name_genre = name_genre_wtf.lower()
-                valeurs_insertion_dictionnaire = {"value_intitule_genre": name_genre}
-                print("valeurs_insertion_dictionnaire ", valeurs_insertion_dictionnaire)
-                strsql_insert_genre = """INSERT INTO t_medecin (`id_medecin`, `nom_medecin`, `prenome_medecin`, `telephone`, `fk_specialite`, `email`) VALUES (NULL,%(value_intitule_genre)s) """
+                # Получение данных из формы.
+                nom_medecin = form.nom_medecin_wtf.data
+                prenome_medecin = form.prenome_medecin_wtf.data
+                telephone = form.telephone_wtf.data
+                email = form.email_wtf.data
+                fk_specialite = form.specialite_wtf.data
+
+                valeurs_insertion_dictionnaire = {
+                    "value_nom_medecin": nom_medecin.lower(),
+                    "value_prenome_medecin": prenome_medecin.lower(),
+                    "value_telephone": telephone,
+                    "value_email": email,
+                    "value_fk_specialite": fk_specialite
+                }
+
+                strsql_insert_medecin = """
+                    INSERT INTO t_medecin
+                    (id_medecin, nom_medecin, prenome_medecin, telephone, fk_specialite, email)
+                    VALUES (NULL, %(value_nom_medecin)s, %(value_prenome_medecin)s, %(value_telephone)s, %(value_fk_specialite)s, %(value_email)s)
+                """
                 with DBconnection() as mconn_bd:
-                    mconn_bd.execute(strsql_insert_genre, valeurs_insertion_dictionnaire)
+                    mconn_bd.execute(strsql_insert_medecin, valeurs_insertion_dictionnaire)
 
-                flash(f"Données insérées !!", "success")
-                print(f"Données insérées !!")
+                flash(f"Данные врача успешно добавлены: {nom_medecin}!", "success")
+                return redirect(url_for('genres_afficher', order_by='ASC', id_genre_sel=0))
 
-                # Pour afficher et constater l'insertion de la valeur, on affiche en ordre inverse. (DESC)
-                return redirect(url_for('genres_afficher', order_by='DESC', id_genre_sel=0))
-
-        except Exception as Exception_genres_ajouter_wtf:
-            raise ExceptionGenresAjouterWtf(f"fichier : {Path(__file__).name}  ;  "
-                                            f"{genres_ajouter_wtf.__name__} ; "
-                                            f"{Exception_genres_ajouter_wtf}")
+        except Exception as e:
+            raise ExceptionGenresAjouterWtf(f"Ошибка при добавлении нового врача : {e}")
 
     return render_template("medecin/genres_ajouter_wtf.html", form=form)
-
-
 """
     Auteur : OM 2021.03.29
     Définition d'une "route" /genre_update
@@ -305,3 +321,104 @@ def genre_delete_wtf():
                            form_delete=form_delete,
                            btn_submit_del=btn_submit_del,
                            data_films_associes=data_films_attribue_genre_delete)
+
+
+# Добавьте скрытое поле для id врача в форму (если еще не добавлено)
+FormWTFAjouterGenres.id_medecin_hidden = HiddenField()
+
+@app.route("/medecin_update_wtf", methods=['GET', 'POST'])
+def medecin_update_wtf():
+    form = FormWTFAjouterGenres()
+    # Получаем список специальностей для select
+    with DBconnection() as mconn_bd:
+        mconn_bd.execute("SELECT id_specialite, nom_specialite FROM t_specialite")
+        specialites = mconn_bd.fetchall()
+        form.specialite_wtf.choices = [(row["id_specialite"], row["nom_specialite"]) for row in specialites]
+
+    # Получаем id врача для редактирования
+    if request.method == "POST":
+        id_medecin_update = form.id_medecin_hidden.data
+    else:
+        id_medecin_update = request.values.get('id_medecin_btn_edit_html')
+
+    if request.method == "POST" and form.validate_on_submit():
+        try:
+            nom_medecin = form.nom_medecin_wtf.data
+            prenome_medecin = form.prenome_medecin_wtf.data
+            telephone = form.telephone_wtf.data
+            email = form.email_wtf.data
+            fk_specialite = form.specialite_wtf.data
+
+            valeurs_update = {
+                "value_id_medecin": id_medecin_update,
+                "value_nom_medecin": nom_medecin.lower(),
+                "value_prenome_medecin": prenome_medecin.lower(),
+                "value_telephone": telephone,
+                "value_email": email,
+                "value_fk_specialite": fk_specialite
+            }
+
+            strsql_update_medecin = """
+                UPDATE t_medecin
+                SET nom_medecin = %(value_nom_medecin)s,
+                    prenome_medecin = %(value_prenome_medecin)s,
+                    telephone = %(value_telephone)s,
+                    email = %(value_email)s,
+                    fk_specialite = %(value_fk_specialite)s
+                WHERE id_medecin = %(value_id_medecin)s
+            """
+            with DBconnection() as mconn_bd:
+                mconn_bd.execute(strsql_update_medecin, valeurs_update)
+
+            flash(f"Данные врача успешно обновлены: {nom_medecin}!", "success")
+            return redirect(url_for('genres_afficher', order_by='ASC', id_genre_sel=0))
+        except Exception as e:
+            raise ExceptionGenresAjouterWtf(f"Ошибка при обновлении врача : {e}")
+
+    elif request.method == "GET":
+        strsql_select_medecin = "SELECT * FROM t_medecin WHERE id_medecin = %(value_id_medecin)s"
+        with DBconnection() as mconn_bd:
+            mconn_bd.execute(strsql_select_medecin, {"value_id_medecin": id_medecin_update})
+            data_medecin = mconn_bd.fetchone()
+            if data_medecin:
+                form.id_medecin_hidden.data = data_medecin["id_medecin"]
+                form.nom_medecin_wtf.data = data_medecin["nom_medecin"]
+                form.prenome_medecin_wtf.data = data_medecin["prenome_medecin"]
+                form.telephone_wtf.data = data_medecin["telephone"]
+                form.email_wtf.data = data_medecin["email"]
+                form.specialite_wtf.data = data_medecin["fk_specialite"]
+
+    return render_template("medecin/genres_ajouter_wtf.html", form=form, update_mode=True)
+
+
+@app.route("/medecin_delete", methods=['GET', 'POST'])
+def medecin_delete_wtf():
+    id_medecin_delete = request.values.get('id_medecin_btn_delete_html')
+    form_delete = FormWTFDeleteGenre()
+    medecin_nom = ""
+    if request.method == "POST" and form_delete.validate_on_submit():
+        if form_delete.submit_btn_annuler.data:
+            return redirect(url_for("genres_afficher", order_by="ASC", id_genre_sel=0))
+        if form_delete.submit_btn_conf_del.data:
+            # Show confirm delete button
+            return render_template("medecin/genre_delete_wtf.html", form_delete=form_delete, btn_submit_del=True, medecin_nom=medecin_nom)
+        if form_delete.submit_btn_del.data:
+            try:
+                strsql_delete_medecin = "DELETE FROM t_medecin WHERE id_medecin = %(value_id_medecin)s"
+                with DBconnection() as mconn_bd:
+                    mconn_bd.execute(strsql_delete_medecin, {"value_id_medecin": id_medecin_delete})
+                flash("Врач успешно удалён!", "success")
+                return redirect(url_for('genres_afficher', order_by="ASC", id_genre_sel=0))
+            except Exception as e:
+                raise ExceptionGenresAjouterWtf(f"Ошибка при удалении врача : {e}")
+
+    elif request.method == "GET":
+        strsql_select_medecin = "SELECT * FROM t_medecin WHERE id_medecin = %(value_id_medecin)s"
+        with DBconnection() as mconn_bd:
+            mconn_bd.execute(strsql_select_medecin, {"value_id_medecin": id_medecin_delete})
+            data_medecin = mconn_bd.fetchone()
+            if data_medecin:
+                medecin_nom = f"{data_medecin['nom_medecin']} {data_medecin['prenome_medecin']}"
+                form_delete.nom_genre_delete_wtf.data = medecin_nom
+
+    return render_template("medecin/genre_delete_wtf.html", form_delete=form_delete, btn_submit_del=False, medecin_nom=medecin_nom, data_films_associes=None)

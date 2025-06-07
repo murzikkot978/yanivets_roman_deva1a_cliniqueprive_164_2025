@@ -27,4 +27,6 @@ if __name__ == '__main__':
     # Une clé est nécessaire pour crypter les "cookies" utilisés par les messages FLASH.
     app.secret_key = SECRET_KEY_FLASK
     # DEBUG_FLASK   inutile de vous dire que c'est insdipensable ... avant la version finale
-    app.run(debug=DEBUG_FLASK, host=ADRESSE_SRV_FLASK, port=PORT_FLASK)
+
+    # Добавьте threaded=True чтобы Flask корректно обрабатывал несколько запросов (например, POST после GET)
+    app.run(debug=DEBUG_FLASK, host=ADRESSE_SRV_FLASK, port=PORT_FLASK, threaded=True)

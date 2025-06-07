@@ -4,7 +4,7 @@
     Gestion des formulaires avec WTF
 """
 from flask_wtf import FlaskForm
-from wtforms import StringField, DateField
+from wtforms import StringField, DateField, SelectField
 from wtforms import SubmitField
 from wtforms.validators import Length, InputRequired, DataRequired
 from wtforms.validators import Regexp
@@ -15,14 +15,14 @@ class FormWTFAjouterGenres(FlaskForm):
         Dans le formulaire "genres_ajouter_wtf.html" on impose que le champ soit rempli.
         Définition d'un "bouton" submit avec un libellé personnalisé.
     """
-    nom_genre_regexp = "^([A-Z]|[a-zÀ-ÖØ-öø-ÿ])[A-Za-zÀ-ÖØ-öø-ÿ]*['\- ]?[A-Za-zÀ-ÖØ-öø-ÿ]+$"
-    nom_genre_wtf = StringField("Clavioter le genre ", validators=[Length(min=2, max=20, message="min 2 max 20"),
-                                                                   Regexp(nom_genre_regexp,
-                                                                          message="Pas de chiffres, de caractères "
-                                                                                  "spéciaux, "
-                                                                                  "d'espace à double, de double "
-                                                                                  "apostrophe, de double trait union")
-                                                                   ])
+    nom_medecin_wtf = StringField("Введите имя врача",
+                                  validators=[Length(min=2, max=50, message="От 2 до 50 символов")])
+    prenome_medecin_wtf = StringField("Введите фамилию врача",
+                                      validators=[Length(min=2, max=50, message="От 2 до 50 символов")])
+    telephone_wtf = StringField("Введите телефон",
+                                validators=[Regexp(r'^\d{10}$', message="Введите 10-значный номер телефона")])
+    email_wtf = StringField("Введите email", validators=[Length(min=5, max=100, message="До 100 символов")])
+    specialite_wtf = SelectField("Выберите специальность врача", coerce=int, validators=[DataRequired(message="Специальность обязательна!")])
     submit = SubmitField("Enregistrer genre")
 
 

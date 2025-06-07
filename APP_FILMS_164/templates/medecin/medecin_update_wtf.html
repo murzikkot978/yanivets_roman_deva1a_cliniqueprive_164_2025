@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %} Редактировать врача {% endblock %}
+{% block body %}
+<div class="container">
+	<h1>Редактировать врача</h1>
+	<form action="" method="POST" novalidate>
+		{{ form_update.hidden_tag() }}
+		{{ form_update.id_medecin_hidden() }}
+		<div class="form-group">
+			{{ form_update.nom_medecin_update_wtf.label }}
+			{{ form_update.nom_medecin_update_wtf(class="form-control") }}
+			{% for error in form_update.nom_medecin_update_wtf.errors %}
+				<span style="color: red;">[{{ error }}]</span>
+			{% endfor %}
+		</div>
+		<div class="form-group">
+			{{ form_update.prenome_medecin_update_wtf.label }}
+			{{ form_update.prenome_medecin_update_wtf(class="form-control") }}
+			{% for error in form_update.prenome_medecin_update_wtf.errors %}
+				<span style="color: red;">[{{ error }}]</span>
+			{% endfor %}
+		</div>
+		<div class="form-group">
+			{{ form_update.telephone_update_wtf.label }}
+			{{ form_update.telephone_update_wtf(class="form-control") }}
+			{% for error in form_update.telephone_update_wtf.errors %}
+				<span style="color: red;">[{{ error }}]</span>
+			{% endfor %}
+		</div>
+		<div class="form-group">
+			{{ form_update.email_update_wtf.label }}
+			{{ form_update.email_update_wtf(class="form-control") }}
+			{% for error in form_update.email_update_wtf.errors %}
+				<span style="color: red;">[{{ error }}]</span>
+			{% endfor %}
+		</div>
+		<div class="form-group">
+			{{ form_update.specialite_update_wtf.label }}
+			{{ form_update.specialite_update_wtf(class="form-control") }}
+			{% for error in form_update.specialite_update_wtf.errors %}
+				<span style="color: red;">[{{ error }}]</span>
+			{% endfor %}
+		</div>
+		<button type="submit" class="btn btn-success">
+			{{ form_update.submit.label }}
+		</button>
+	</form>
+</div>
+{% endblock %}

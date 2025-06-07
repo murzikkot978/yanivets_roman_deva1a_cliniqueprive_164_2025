@@ -4,7 +4,7 @@
     Gestion des formulaires avec WTF
 """
 from flask_wtf import FlaskForm
-from wtforms import StringField, DateField, SelectField
+from wtforms import StringField, DateField, SelectField, HiddenField
 from wtforms import SubmitField
 from wtforms.validators import Length, InputRequired, DataRequired
 from wtforms.validators import Regexp
@@ -59,3 +59,13 @@ class FormWTFDeleteGenre(FlaskForm):
     submit_btn_del = SubmitField("Effacer genre")
     submit_btn_conf_del = SubmitField("Etes-vous sur d'effacer ?")
     submit_btn_annuler = SubmitField("Annuler")
+
+
+class FormWTFUpdateMedecin(FlaskForm):
+    nom_medecin_update_wtf = StringField("Имя", validators=[Length(min=2, max=50, message="От 2 до 50 символов")])
+    prenome_medecin_update_wtf = StringField("Фамилия", validators=[Length(min=2, max=50, message="От 2 до 50 символов")])
+    telephone_update_wtf = StringField("Телефон", validators=[Regexp(r'^\d{10}$', message="Введите 10-значный номер телефона")])
+    email_update_wtf = StringField("Email", validators=[Length(min=5, max=100, message="До 100 символов")])
+    specialite_update_wtf = SelectField("Специальность", coerce=int, validators=[DataRequired(message="Специальность обязательна!")])
+    id_medecin_hidden = HiddenField()
+    submit = SubmitField("Сохранить изменения")

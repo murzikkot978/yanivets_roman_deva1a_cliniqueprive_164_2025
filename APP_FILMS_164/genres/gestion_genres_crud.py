@@ -17,6 +17,7 @@ from APP_FILMS_164.erreurs.exceptions import *
 from APP_FILMS_164.genres.gestion_genres_wtf_forms import FormWTFAjouterGenres
 from APP_FILMS_164.genres.gestion_genres_wtf_forms import FormWTFDeleteGenre
 from APP_FILMS_164.genres.gestion_genres_wtf_forms import FormWTFUpdateGenre
+from APP_FILMS_164.genres.gestion_genres_wtf_forms import FormWTFUpdateMedecin
 
 """
     Auteur : OM 2021.03.16
@@ -328,14 +329,13 @@ FormWTFAjouterGenres.id_medecin_hidden = HiddenField()
 
 @app.route("/medecin_update_wtf", methods=['GET', 'POST'])
 def medecin_update_wtf():
-    form = FormWTFAjouterGenres()
+    form = FormWTFUpdateMedecin()
     # Получаем список специальностей для select
     with DBconnection() as mconn_bd:
         mconn_bd.execute("SELECT id_specialite, nom_specialite FROM t_specialite")
         specialites = mconn_bd.fetchall()
-        form.specialite_wtf.choices = [(row["id_specialite"], row["nom_specialite"]) for row in specialites]
+        form.specialite_update_wtf.choices = [(row["id_specialite"], row["nom_specialite"]) for row in specialites]
 
-    # Получаем id врача для редактирования
     if request.method == "POST":
         id_medecin_update = form.id_medecin_hidden.data
     else:
@@ -343,16 +343,16 @@ def medecin_update_wtf():
 
     if request.method == "POST" and form.validate_on_submit():
         try:
-            nom_medecin = form.nom_medecin_wtf.data
-            prenome_medecin = form.prenome_medecin_wtf.data
-            telephone = form.telephone_wtf.data
-            email = form.email_wtf.data
-            fk_specialite = form.specialite_wtf.data
+            nom_medecin = form.nom_medecin_update_wtf.data
+            prenome_medecin = form.prenome_medecin_update_wtf.data
+            telephone = form.telephone_update_wtf.data
+            email = form.email_update_wtf.data
+            fk_specialite = form.specialite_update_wtf.data
 
             valeurs_update = {
                 "value_id_medecin": id_medecin_update,
-                "value_nom_medecin": nom_medecin.lower(),
-                "value_prenome_medecin": prenome_medecin.lower(),
+                "value_nom_medecin": nom_medecin,
+                "value_prenome_medecin": prenome_medecin,
                 "value_telephone": telephone,
                 "value_email": email,
                 "value_fk_specialite": fk_specialite
@@ -382,13 +382,13 @@ def medecin_update_wtf():
             data_medecin = mconn_bd.fetchone()
             if data_medecin:
                 form.id_medecin_hidden.data = data_medecin["id_medecin"]
-                form.nom_medecin_wtf.data = data_medecin["nom_medecin"]
-                form.prenome_medecin_wtf.data = data_medecin["prenome_medecin"]
-                form.telephone_wtf.data = data_medecin["telephone"]
-                form.email_wtf.data = data_medecin["email"]
-                form.specialite_wtf.data = data_medecin["fk_specialite"]
+                form.nom_medecin_update_wtf.data = data_medecin["nom_medecin"]
+                form.prenome_medecin_update_wtf.data = data_medecin["prenome_medecin"]
+                form.telephone_update_wtf.data = data_medecin["telephone"]
+                form.email_update_wtf.data = data_medecin["email"]
+                form.specialite_update_wtf.data = data_medecin["fk_specialite"]
 
-    return render_template("medecin/genres_ajouter_wtf.html", form=form, update_mode=True)
+    return render_template("medecin/medecin_update_wtf.html", form_update=form)
 
 
 @app.route("/medecin_delete", methods=['GET', 'POST'])
